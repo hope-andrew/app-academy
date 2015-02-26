@@ -72,7 +72,7 @@ class Board
       render_string += render_row(row, :red)
       render_string += "\n"
     end
-    render_string
+    puts render_string
   end
 
   def render_row(row_num, color)
@@ -89,14 +89,24 @@ class Board
     render_string
   end
 
-  def move(starting, ending, current_player)
-    rasie "starting postion empty" if self[starting].nil?
-
-
-  end
+  # def move(starting, ending, current_player_color)
+  #
+  #   piece = self[starting]
+  #
+  #   raise "starting postion empty" if self[starting].nil?
+  #
+  #   if piece.color != current_player
+  #     raise "you must move your own piece"
+  #   elsif
+  #
+  #
+  #
+  # end
 
   def valid_move?(pos, piece)
     raise "not valid position" unless board.valid_pos?(pos)
+
+
 
 
 

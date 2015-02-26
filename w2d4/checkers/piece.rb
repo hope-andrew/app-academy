@@ -3,9 +3,8 @@ require 'colorize'
 
 class Piece
 
-  attr_writer :king
-  attr_reader :board, :color
-  attr_accessor :position
+  attr_reader :board
+  attr_accessor :position, :king, :color
 
   def initialize(board, position, color, king)
     @board = board
@@ -19,15 +18,77 @@ class Piece
     @king
   end
 
-  def moves
+
+  def perform_slide(starting, ending)
+
+    raise "must move your own piece" if position != starting
+
+    moves = []
+    move_diffs.each do |diff|
+      row_coord = starting[0] + diff[0]
+      col_coord = starting[1] + diff[1]
+      new_pos = [row_coord, col_coord]
+      if board.valid_pos?(new_pos) && board[ending].nil?
+        moves << new_pos
+      end
+    end
+
+    return true if moves.include?(ending)
+    false
 
   end
 
-  def valid_move?(pos, piece, board)
-    raise "not valid position" unless valid_pos?(pos)
+  def perform_jump(starting, ending)
+    moves = []
+
+    jump_diffs.each do |diff|
+      row_coord = starting[0] + diff[0]
+      col_coord = starting[1] + diff[1]
+      new_pos = [row_coord, col_coord]
+
+      if board.valid_pos?(new_pos) && board[ending].nil?
+        moves << new_pos
+      end
+
+    end
+
+    if moves.include?(ending) && check_intermediate_piece(starting, ending)
+      true
+    end
+      false
+  end
+
+  def check_intermediate_piece(starting, ending)
+      intermediate_x = (starting[0] + ending[0])/2
+      intermediate_y = (starting[1] + ending[1])/2
+      intermediate_pos = [intermediate_x, intermediate_y]
+
+      return false if board[intermediate_pos] == nil
+      return true if board[intermediate_pos].color != @color
+      false
+  end
+
+  def jump_diffs
+
+    diffs_red = [[2, -2], [2, 2]]
+    diffs_black = [[-2, -2], [-2, 2]]
+    diffs_king = [[2, -2], [2, 2], [-2, -2], [-2, 2]]
+
+    return diffs_king if king?
+    return diffs_red if color == :red
+    return diffs_black if color == :black
 
 
+  end
 
+  def move_diffs
+    diffs_red = [[1, -1], [1, 1]]
+    diffs_black = [[-1, -1], [-1, 1]]
+    diffs_king = [[1, -1], [1, 1], [-1, -1], [-1, 1]]
+
+    return diffs_king if king?
+    return diffs_red if color == :red
+    return diffs_black if color == :black
   end
 
   def symbol(color)
