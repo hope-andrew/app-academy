@@ -39,7 +39,7 @@ class Board
   def set_even_row(row_idx, color)
     @grid[row_idx].each_index do |col|
       if col % 2 == 0
-        self[[row_idx, col]] = Piece.new(self, color, false)
+        self[[row_idx, col]] = Piece.new(self, [row_idx, col], color, false)
       else
         next
       end
@@ -49,7 +49,7 @@ class Board
   def set_odd_row(row_idx, color)
     @grid[row_idx].each_index do |col|
       if col % 2 == 1
-        self[[row_idx, col]] = Piece.new(self, color, false)
+        self[[row_idx, col]] = Piece.new(self, [row_idx, col], color, false)
       else
         next
       end
@@ -87,6 +87,21 @@ class Board
     end
 
     render_string
+  end
+
+  def move(starting, ending, current_player)
+    rasie "starting postion empty" if self[starting].nil?
+
+
+  end
+
+  def valid_move?(pos, piece)
+    raise "not valid position" unless board.valid_pos?(pos)
+
+
+
+
+
   end
 
 
