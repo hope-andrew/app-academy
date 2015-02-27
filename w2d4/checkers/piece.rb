@@ -1,15 +1,14 @@
-require_relative 'board'
 require 'colorize'
+require 'byebug'
 
 class Piece
 
   attr_reader :board
-  attr_accessor :position, :king, :color
+  attr_accessor :king, :color
 
-  def initialize(board, position, color, king)
+  def initialize(board, color, king)
     @board = board
     @color = color
-    @position = position
     @king = false
     @symbol = symbol(color)
   end
@@ -21,7 +20,7 @@ class Piece
 
   def perform_slide(starting, ending)
 
-    raise "must move your own piece" if position != starting
+    # raise "must move your own piece" if position != starting
 
     moves = []
     move_diffs.each do |diff|
@@ -53,7 +52,7 @@ class Piece
     end
 
     if moves.include?(ending) && check_intermediate_piece(starting, ending)
-      true
+      return true
     end
       false
   end

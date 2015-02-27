@@ -1,4 +1,4 @@
-require_relative 'piece'
+require_relative 'piece.rb'
 require 'colorize'
 
 class Board
@@ -39,7 +39,7 @@ class Board
   def set_even_row(row_idx, color)
     @grid[row_idx].each_index do |col|
       if col % 2 == 0
-        self[[row_idx, col]] = Piece.new(self, [row_idx, col], color, false)
+        self[[row_idx, col]] = Piece.new(self, color, false)
       else
         next
       end
@@ -49,7 +49,7 @@ class Board
   def set_odd_row(row_idx, color)
     @grid[row_idx].each_index do |col|
       if col % 2 == 1
-        self[[row_idx, col]] = Piece.new(self, [row_idx, col], color, false)
+        self[[row_idx, col]] = Piece.new(self, color, false)
       else
         next
       end
@@ -89,31 +89,59 @@ class Board
     render_string
   end
 
-  # def move(starting, ending, current_player_color)
-  #
-  #   piece = self[starting]
-  #
-  #   raise "starting postion empty" if self[starting].nil?
-  #
-  #   if piece.color != current_player
-  #     raise "you must move your own piece"
-  #   elsif
-  #
-  #
-  #
-  # end
+  def move(starting, ending, player_turn)
 
-  def valid_move?(pos, piece)
-    raise "not valid position" unless board.valid_pos?(pos)
+    raise "Invalid position " unless valid_pos?(starting) && valid_pos?(ending)
 
 
+    piece = self[starting]
+    raise "Must select a piece" if piece.nil?
+    raise "Must select own piece" unless piece.color == player_turn
 
+    if piece.perform_slide(starting, ending)
+      self[ending] = piece
+      self[starting] = nil
+      return
+    end
 
+    if piece.perform_jump(starting, ending)
+      self[ending] = piece
+      self[starting] = nil
+      self[intermediate_position(starting, ending)] = nil
+      return
+    end
 
+    raise "Invalid move" if true
 
+  end
 
+  def intermediate_position(starting, ending)
+    intermediate_x = (starting[0] + ending[0])/2
+    intermediate_y = (starting[1] + ending[1])/2
+    [intermediate_x, intermediate_y]
+  end
+
+  def pieces(color)
+    count = 0
+    @grid.each_index do |row|
+      @grid[row].each_index do |col|
+          next if self[[row,col]].nil?
+          count +=1 if self[[row,col]].color == color
+      end
+    end
+    count
   end
 
 
 
 end
+
+# b = Board.new
+# b.render
+# b.move([5,1], [4,2])
+# b.render
+# b.move([4,2], [3,3])
+# b.render
+# puts b[[2,4]].perform_jump([2,4], [4,2])
+# b.move([2,4], [4,2])
+# b.render
